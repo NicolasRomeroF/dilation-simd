@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <emmintrin.h>
 
 int** crearMatriz(int size){
@@ -22,6 +24,7 @@ int** crearMatriz(int size){
 int** copyImage(int** imagen, int size){
     int** copia = crearMatriz(size);
     if(copia==NULL){
+        printf("No se pudo copiar la matriz\n");
         return NULL;
     }
     int i,j;
@@ -37,6 +40,7 @@ int** dilation(int** imagen, int size){
     int i,j,newPix;
     int** copia = copyImage(imagen,size);
     if(copia==NULL){
+        printf("No se pudo aplicar la operacion\n");
         return NULL;
     }
     for(i = 1; i<size-1; i++){
@@ -49,17 +53,26 @@ int** dilation(int** imagen, int size){
 }
 
 int** leerArchivo(char nombreArchivo[128],int size){
-    FILE* archivo = fopen(nombreArchivo,"r");
+    int archivo = open(nombreArchivo,O_RDONLY);
+
+    if(archivo==-1){
+        printf("No se pudo leer el archivo\n");
+        return NULL;
+    }
     int i,j;
     int** imagen = crearMatriz(size);
+    if(imagen==NULL){
+        printf("No se pudo leer el archivo\n");
+        return NULL;
+    }
     int buffer;
     for(i = 0; i < size; i++){
         for(j = 0; j < size; j++){
-            fread(&buffer,sizeof(int),1,archivo);
+            read(archivo,&buffer,sizeof(int));
             imagen[i][j] = buffer;
         }
     }
-    fclose(archivo);
+    close(archivo);
     return imagen;
 }
 
@@ -74,29 +87,29 @@ void printMatriz(int** imagen, int size){
 }
 
 void createFile(char nombre[128],int** imagen, int size){
-    FILE* f = fopen(nombre, "w");
+    int f = open(nombre, O_WRONLY);
 
-    if(f==NULL){
-        printf("No se puede crear el archivo de salida\n");
+    if(f==-1){
+        printf("No se pudo crear el archivo\n");
         return;
     }
-
     int i,j,pix;
 
     for(i = 0; i < size; i++){
         for(j = 0;j < size; j++){
             pix = imagen[i][j];
-            fwrite(&pix,sizeof(int),1,f);
+            write(f,&pix,sizeof(int));
         }
         
     }
-    fclose(f);
+    close(f);
 }
 
 int** dilationSIMD(int** imagen, int size){
     int i,j,k,newPix;
     int** copia = copyImage(imagen,size);
     if(copia==NULL){
+        printf("No se pudo aplicar la operacion\n");
         return NULL;
     }
     int resto = (size-2)%4;
@@ -129,18 +142,20 @@ int main(){
 
     int size = 256;
 
-    int** imagen = leerArchivo("circulosD.raw",size);
+    int** imagen = leerArchivo("circulos.raw",size);
     if(imagen==NULL){
         return -1;
     }
+ 
 
-
+    
     //int** imagenD = dilation(imagen, size);
     int** imagenD = dilationSIMD(imagen, size);
     if(imagenD==NULL){
         return -1;
     }
-    printMatriz(imagenD,size);
+
+    //printMatriz(imagenD,size);
     
     createFile("circulosD.raw",imagenD,size);
 
