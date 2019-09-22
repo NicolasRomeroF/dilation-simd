@@ -1,0 +1,122 @@
+#include <unistd.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "funciones.h"
+
+int main(int argc, char **argv){
+    char* sName = NULL;
+    char* iName = NULL;
+    char* pName = NULL;
+    int Nsize = 0;
+    int Dopcion = 0;
+    int index;
+    int c;
+
+    /*
+    Entradas por linea de comando
+    iName: nombre de la imagen de entrada
+    sName: nombre de la imagen de salida secuancial
+    pName: nombre de la imagen de salida con registros SIMD
+    Nsize: tamano de la imagen de entrada (NxN)
+    Dopcion: opcion que indica si mostrar o no por pantalla las matrices resultantes
+    */
+
+    opterr = 0;
+
+    while ((c = getopt (argc, argv, "i:s:p:N:D:")) != -1)
+        switch (c)
+        {
+        case 'i':
+            iName = optarg;
+            break;
+        case 's':
+            sName = optarg;
+            break;
+        case 'p':
+            pName = optarg;
+            break;
+        case 'N':
+            sscanf(optarg, "%d", &Nsize);
+			break;
+        case 'D':
+            sscanf(optarg, "%d", &Dopcion);
+			break;
+        case ':':
+            printf("Opcion necesita un valor\n");
+            break;
+        case '?':
+            if (optopt == 'c')
+            fprintf (stderr, "Opcion -%c requiere un argumento\n", optopt);
+            else if (isprint (optopt))
+            fprintf (stderr, "Opcion desconocida `-%c'.\n", optopt);
+            else
+            fprintf (stderr,
+                    "Caracter desconocido`\\x%x'.\n",
+                    optopt);
+            return 1;
+        default:
+            abort ();
+        }
+
+    for (index = optind; index < argc; index++){
+        printf ("Argumento sin opcion %s\n", argv[index]); 
+    }
+
+    printf("i: %s s: %s p: %s N: %d D:%d\n",iName,sName,pName,Nsize,Dopcion);
+              
+
+
+    int size = Nsize;
+    printf("Leyendo archivo...\n");
+    int** imagen = leerArchivo(iName,size);
+    if(imagen==NULL){
+        return -1;
+    }
+
+    clock_t tSecuencial;
+    clock_t tSIMD;
+
+    printf("Aplicando operacion secuencial...\n");
+    tSecuencial = clock();
+    int** imagenD = dilation(imagen, size);
+    tSecuencial = clock() - tSecuencial;
+    double tiempoS = ((double)tSecuencial)/CLOCKS_PER_SEC;
+
+    printf("Aplicando operacion SIMD...\n");
+    tSIMD = clock();
+    int** imagenDSIMD = dilationSIMD(imagen, size);
+    tSIMD = clock() - tSIMD;
+    double tiempoSIMD = ((double)tSIMD)/CLOCKS_PER_SEC;
+
+    freeMatriz(imagen,size);
+
+    if(imagenD==NULL){
+        return -1;
+    }
+    if(imagenDSIMD==NULL){
+        return -1;
+    }
+
+    if(Dopcion==1){
+        printf("Resultado secuencial: \n");
+        printMatriz(imagenD,size);
+        printf("\nResultado SIMD: \n");
+        printMatriz(imagenD,size);
+        printf("\n");
+    }
+    
+    printf("Escribiendo archivo secuencial...\n");
+    createFile(sName,imagenD,size);
+    printf("Escribiendo archivo SIMD...\n");
+    createFile(pName,imagenDSIMD,size);
+
+    freeMatriz(imagenD,size);
+    freeMatriz(imagenDSIMD,size);
+
+    printf("\nTiempo secuenciual: %f s\n",tiempoS);
+    printf("Tiempo SIMD: %f s\n",tiempoSIMD);
+
+    return 0;
+}
