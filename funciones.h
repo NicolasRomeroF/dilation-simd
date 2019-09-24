@@ -1,6 +1,13 @@
 #ifndef FUNCIONES_H_
 #define FUNCIONES_H_
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <emmintrin.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <time.h>
+
 int** crearMatriz(int size);
 int** copyImage(int** imagen, int size);
 int** dilation(int** imagen, int size);

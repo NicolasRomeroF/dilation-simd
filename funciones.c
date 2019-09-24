@@ -1,13 +1,9 @@
 /*
 Laboratorio 1
 Autor: Nicolas Romero Flores
-Asignatura: Computacion de alto rendimiento*/
+Asignatura: Computacion de alto rendimiento
+*/
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <emmintrin.h>
-#include <stdint.h>
 #include "funciones.h"
 
 /*

@@ -1,8 +1,9 @@
-#include <unistd.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+/*
+Laboratorio 1
+Autor: Nicolas Romero Flores
+Asignatura: Computacion de alto rendimiento
+*/
+
 #include "funciones.h"
 
 int main(int argc, char **argv){
