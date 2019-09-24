@@ -115,7 +115,7 @@ int main(int argc, char **argv){
     freeMatriz(imagenD,size);
     freeMatriz(imagenDSIMD,size);
 
-    printf("\nTiempo secuenciual: %f s\n",tiempoS);
+    printf("\nTiempo secuencial: %f s\n",tiempoS);
     printf("Tiempo SIMD: %f s\n",tiempoSIMD);
 
     return 0;

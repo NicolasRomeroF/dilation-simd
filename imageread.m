@@ -1,4 +1,4 @@
-f = fopen('circulosD.raw','r');
+f = fopen('14SIMD.raw','r');
 s = fread(f,'int'); 
 fclose(f);
 root = sqrt(length(s))

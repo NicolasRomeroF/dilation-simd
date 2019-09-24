@@ -14,10 +14,10 @@ void createFile(char nombre[128], int size){
         {0,0,0,255,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,255,255,255,0,0,0,0,0,0,0},
         {0,0,0,0,0,255,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,255,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -26,7 +26,8 @@ void createFile(char nombre[128], int size){
     for(i = 0; i < size; i++){
         for(j=0; j<size;j++){
             r = rand()%2;
-            fwrite(&(valores[r]),sizeof(int),1,f);
+            //fwrite(&(valores[r]),sizeof(int),1,f);
+            fwrite(&(matriz[i][j]),sizeof(int),1,f);
         }
         
     }
@@ -35,7 +36,7 @@ void createFile(char nombre[128], int size){
 int main(){
 
     srand(time(NULL));   // Initialization, should only be called once.
-    int filas=1024;
+    int filas=14;
     createFile("14.raw",filas);
     return 0;
 

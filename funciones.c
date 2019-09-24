@@ -7,6 +7,7 @@ Asignatura: Computacion de alto rendimiento*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <emmintrin.h>
+#include <stdint.h>
 #include "funciones.h"
 
 /*
@@ -52,6 +53,18 @@ int** copyImage(int** imagen, int size){
 }
 
 /*
+Funcion que obtiene el mayor entre dos numeros
+Entrada: numeros a comparar
+Salida: mayor numero
+*/
+int mayor(int a,int b){
+    if(a>b){
+        return a;
+    }
+    return b;
+}
+
+/*
 Funcion que aplica la operacion dilation de forma secuencial
 Entrada: Matriz de valores, tamano de la matriz
 Salida: Matriz con operacion aplicada
@@ -65,7 +78,7 @@ int** dilation(int** imagen, int size){
     }
     for(i = 1; i<size-1; i++){
         for(j = 1; j<size-1; j++){
-            newPix = imagen[i-1][j]+imagen[i+1][j]+imagen[i][j+1]+imagen[i][j-1]+imagen[i][j];
+            newPix = mayor(imagen[i-1][j], mayor(imagen[i+1][j], mayor(imagen[i][j+1], mayor(imagen[i][j-1],imagen[i][j]))));
             copia[i][j] = newPix;
         }
     }
@@ -167,10 +180,10 @@ int** dilationSIMD(int** imagen, int size){
             left = _mm_loadu_si128((__m128i*)&imagen[i][j-1]);
             right = _mm_loadu_si128((__m128i*)&imagen[i][j+1]);
             center = _mm_loadu_si128((__m128i*)&imagen[i][j]);
-            center = _mm_add_epi32(center,down);
-            center = _mm_add_epi32(center,up);
-            center = _mm_add_epi32(center,right);
-            center = _mm_add_epi32(center,left);
+            center = _mm_max_epi16(center,down);
+            center = _mm_max_epi16(center,up);
+            center = _mm_max_epi16(center,right);
+            center = _mm_max_epi16(center,left);
             
             //newPix = imagen[i-1][j]+imagen[i+1][j]+imagen[i][j+1]+imagen[i][j-1];
             _mm_storeu_si128((__m128i*)&copia[i][j],center);
