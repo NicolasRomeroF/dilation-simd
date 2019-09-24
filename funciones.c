@@ -176,10 +176,10 @@ int** dilationSIMD(int** imagen, int size){
             left = _mm_loadu_si128((__m128i*)&imagen[i][j-1]);
             right = _mm_loadu_si128((__m128i*)&imagen[i][j+1]);
             center = _mm_loadu_si128((__m128i*)&imagen[i][j]);
-            center = _mm_max_epi16(center,down);
-            center = _mm_max_epi16(center,up);
-            center = _mm_max_epi16(center,right);
-            center = _mm_max_epi16(center,left);
+            center = _mm_or_si128(center,down);
+            center = _mm_or_si128(center,up);
+            center = _mm_or_si128(center,right);
+            center = _mm_or_si128(center,left);
             
             //newPix = imagen[i-1][j]+imagen[i+1][j]+imagen[i][j+1]+imagen[i][j-1];
             _mm_storeu_si128((__m128i*)&copia[i][j],center);
