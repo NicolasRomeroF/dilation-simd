@@ -14,7 +14,7 @@ int** dilation(int** imagen, int size);
 int** leerArchivo(char nombreArchivo[128],int size);
 void printMatriz(int** imagen, int size);
 void createFile(char nombre[128],int** imagen, int size);
-int** dilationSIMD(int** imagen, int size);
+int** dilationSIMD(int** imagen, int size, int cantHebras);
 void freeMatriz(int** matriz, int size);
 
 #endif

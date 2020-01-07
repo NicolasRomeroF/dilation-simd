@@ -1,6 +1,2 @@
-CC=gcc
-CFLAGS=-I.
-
-all: funciones.o main.o
-	$(CC) -o dilation funciones.o main.o -msse3 -Wall -I.
-	rm main.o funciones.o
+main: main.c funciones.c
+	gcc main.c funciones.c -o dilation -msse3 -Wall -fopenmp

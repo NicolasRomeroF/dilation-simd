@@ -5,6 +5,9 @@ Asignatura: Computacion de alto rendimiento
 */
 
 #include "funciones.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 /*
 Funcion que retorna un puntero de memoria a una matriz del tamano dado
@@ -59,12 +62,11 @@ int mayor(int a,int b){
     }
     return b;
 }
-
 /*
 Funcion que aplica la operacion dilation de forma secuencial
 Entrada: Matriz de valores, tamano de la matriz
 Salida: Matriz con operacion aplicada
-*/
+
 int** dilation(int** imagen, int size){
     int i,j,newPix;
     int** copia = copyImage(imagen,size);
@@ -79,7 +81,7 @@ int** dilation(int** imagen, int size){
         }
     }
     return copia;
-}
+}*/
 
 /*
 Funcion que permite leer el archivo de entrada que contiene la imagen
@@ -93,13 +95,12 @@ int** leerArchivo(char nombreArchivo[128],int size){
         printf("No se pudo leer el archivo\n");
         return NULL;
     }
-    int i,j;
+    int i;
     int** imagen = crearMatriz(size);
     if(imagen==NULL){
         printf("No se pudo leer el archivo\n");
         return NULL;
     }
-    int buffer;
     for(i = 0; i < size; i++){
         fread(imagen[i],sizeof(int),size,archivo);
         /*for(j = 0; j < size; j++){
@@ -143,7 +144,7 @@ void createFile(char nombre[128],int** imagen, int size){
         printf("No se pudo crear el archivo\n");
         return;
     }
-    int i,j,pix;
+    int i;
 
     for(i = 0; i < size; i++){
         fwrite(imagen[i],sizeof(int),size,f);
@@ -162,7 +163,7 @@ Funcion que aplica la operacion dilation con registros SIMD
 Entrada: Matriz de valores, tamano de la matriz
 Salida: Matriz con operacion aplicada
 */
-int** dilationSIMD(int** imagen, int size){
+int** dilationSIMD(int** imagen, int size, int cantHebras){
     int i,j,k,newPix;
     int** copia = copyImage(imagen,size);
     if(copia==NULL){
@@ -171,6 +172,8 @@ int** dilationSIMD(int** imagen, int size){
     }
     int resto = (size-2)%4;
     __m128i up,down,left,right,center;
+    omp_set_num_threads(cantHebras);
+    #pragma omp parallel for
     for(i = 1; i<size-1; i++){
         for(j = 1; j<size-4; j+=4){
             up = _mm_loadu_si128((__m128i*)&imagen[i-1][j]);

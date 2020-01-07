@@ -9,9 +9,9 @@ Asignatura: Computacion de alto rendimiento
 int main(int argc, char **argv){
     char* sName = NULL;
     char* iName = NULL;
-    char* pName = NULL;
     int Nsize = 0;
     int Dopcion = 0;
+    int cantHebras = 1;
     int index;
     int c;
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 
     opterr = 0;
 
-    while ((c = getopt (argc, argv, "i:s:p:N:D:")) != -1)
+    while ((c = getopt (argc, argv, "i:s:N:H:D:")) != -1)
         switch (c)
         {
         case 'i':
@@ -35,11 +35,11 @@ int main(int argc, char **argv){
         case 's':
             sName = optarg;
             break;
-        case 'p':
-            pName = optarg;
-            break;
         case 'N':
             sscanf(optarg, "%d", &Nsize);
+			break;
+        case 'H':
+            sscanf(optarg, "%d", &cantHebras);
 			break;
         case 'D':
             sscanf(optarg, "%d", &Dopcion);
@@ -65,7 +65,7 @@ int main(int argc, char **argv){
         printf ("Argumento sin opcion %s\n", argv[index]); 
     }
 
-    printf("i: %s s: %s p: %s N: %d D:%d\n",iName,sName,pName,Nsize,Dopcion);
+    printf("i: %s s: %s N: %d H: %d D:%d\n",iName,sName,Nsize,cantHebras,Dopcion);
               
 
 
@@ -76,47 +76,49 @@ int main(int argc, char **argv){
         return -1;
     }
 
-    clock_t tSecuencial;
+    //clock_t tSecuencial;
     clock_t tSIMD;
-
+    /*
     printf("Aplicando operacion secuencial...\n");
     tSecuencial = clock();
     int** imagenD = dilation(imagen, size);
     tSecuencial = clock() - tSecuencial;
     double tiempoS = ((double)tSecuencial)/CLOCKS_PER_SEC;
+    */
 
     printf("Aplicando operacion SIMD...\n");
     tSIMD = clock();
-    int** imagenDSIMD = dilationSIMD(imagen, size);
+    int** imagenDSIMD = dilationSIMD(imagen, size,cantHebras);
     tSIMD = clock() - tSIMD;
     double tiempoSIMD = ((double)tSIMD)/CLOCKS_PER_SEC;
 
     freeMatriz(imagen,size);
 
-    if(imagenD==NULL){
+    /*if(imagenD==NULL){
         return -1;
-    }
+    }*/
     if(imagenDSIMD==NULL){
         return -1;
     }
 
     if(Dopcion==1){
+        /*
         printf("Resultado secuencial: \n");
-        printMatriz(imagenD,size);
+        printMatriz(imagenD,size);*/
         printf("\nResultado SIMD: \n");
-        printMatriz(imagenD,size);
+        printMatriz(imagenDSIMD,size);
         printf("\n");
     }
-    
+    /*
     printf("Escribiendo archivo secuencial...\n");
-    createFile(sName,imagenD,size);
+    createFile(sName,imagenD,size);*/
     printf("Escribiendo archivo SIMD...\n");
-    createFile(pName,imagenDSIMD,size);
+    createFile(sName,imagenDSIMD,size);
 
-    freeMatriz(imagenD,size);
+    //freeMatriz(imagenD,size);
     freeMatriz(imagenDSIMD,size);
 
-    printf("\nTiempo secuencial: %f s\n",tiempoS);
+    //printf("\nTiempo secuencial: %f s\n",tiempoS);
     printf("Tiempo SIMD: %f s\n",tiempoSIMD);
 
     return 0;
