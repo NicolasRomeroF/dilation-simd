@@ -172,8 +172,9 @@ int** dilationSIMD(int** imagen, int size, int cantHebras){
     }
     int resto = (size-2)%4;
     __m128i up,down,left,right,center;
+    printf("Cantidad de hebras: %d\n",cantHebras);
     omp_set_num_threads(cantHebras);
-    #pragma omp parallel for
+    #pragma omp parallel for private(up, down, left, right, center)
     for(i = 1; i<size-1; i++){
         for(j = 1; j<size-4; j+=4){
             up = _mm_loadu_si128((__m128i*)&imagen[i-1][j]);
