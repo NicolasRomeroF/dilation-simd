@@ -76,15 +76,7 @@ int main(int argc, char **argv){
         return -1;
     }
 
-    //clock_t tSecuencial;
     clock_t tSIMD;
-    /*
-    printf("Aplicando operacion secuencial...\n");
-    tSecuencial = clock();
-    int** imagenD = dilation(imagen, size);
-    tSecuencial = clock() - tSecuencial;
-    double tiempoS = ((double)tSecuencial)/CLOCKS_PER_SEC;
-    */
 
     printf("Aplicando operacion SIMD...\n");
     tSIMD = clock();
@@ -96,31 +88,18 @@ int main(int argc, char **argv){
 
     freeMatriz(imagen,size);
 
-    /*if(imagenD==NULL){
-        return -1;
-    }*/
     if(imagenDSIMD==NULL){
         return -1;
     }
 
     if(Dopcion==1){
-        /*
-        printf("Resultado secuencial: \n");
-        printMatriz(imagenD,size);*/
         printf("\nResultado SIMD: \n");
         printMatriz(imagenDSIMD,size);
         printf("\n");
     }
-    /*
-    printf("Escribiendo archivo secuencial...\n");
-    createFile(sName,imagenD,size);*/
     printf("Escribiendo archivo SIMD...\n");
     createFile(sName,imagenDSIMD,size);
 
-    //freeMatriz(imagenD,size);
-    //freeMatriz(imagenDSIMD,size);
-
-    //printf("\nTiempo secuencial: %f s\n",tiempoS);
     printf("Tiempo SIMD: %f s\n",tiempoSIMD);
 
     return 0;

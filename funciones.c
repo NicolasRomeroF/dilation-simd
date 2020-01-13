@@ -62,26 +62,6 @@ int mayor(int a,int b){
     }
     return b;
 }
-/*
-Funcion que aplica la operacion dilation de forma secuencial
-Entrada: Matriz de valores, tamano de la matriz
-Salida: Matriz con operacion aplicada
-
-int** dilation(int** imagen, int size){
-    int i,j,newPix;
-    int** copia = copyImage(imagen,size);
-    if(copia==NULL){
-        printf("No se pudo aplicar la operacion\n");
-        return NULL;
-    }
-    for(i = 1; i<size-1; i++){
-        for(j = 1; j<size-1; j++){
-            newPix = mayor(imagen[i-1][j], mayor(imagen[i+1][j], mayor(imagen[i][j+1], mayor(imagen[i][j-1],imagen[i][j]))));
-            copia[i][j] = newPix;
-        }
-    }
-    return copia;
-}*/
 
 /*
 Funcion que permite leer el archivo de entrada que contiene la imagen
