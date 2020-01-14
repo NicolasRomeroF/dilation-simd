@@ -1,6 +1,6 @@
 /*
-Laboratorio 1
-Autor: Nicolas Romero Flores
+Laboratorio 3
+Autor: Nicolas Romero - Franco Leal
 Asignatura: Computacion de alto rendimiento
 */
 
